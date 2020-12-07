@@ -10,16 +10,17 @@ $(PROJ).blif: $(SRC)
 %.blif:
 	time yosys \
 		-q \
-		-p "synth_ice40 -top top -blif $@" \
+		-p "synth_ice40 -top top -json hardware.json -blif $@" \
 		$^
 
 %.asc: $(PIN_SRC) %.blif
-	time arachne-pnr \
-		-d $(DEVICE) \
-		-P $(FOOTPRNT) \
-		-o $@ \
-		-p \
-		$^
+	time nextpnr-ice40 \
+		--lp$(DEVICE) \
+		--package $(FOOTPRNT) \
+		--json hardware.json \
+		--asc $@ \
+		--pcf \
+		$<
 
 %.bin: %.asc
 	time icepack $^ $@
@@ -32,4 +33,4 @@ $(PROJ).blif: $(SRC)
 	sh ../../load_fw/bw-prog.sh $^
 
 clean:
-	$(RM) *.blif *.asc *.bin
+	$(RM) *.blif *.asc *.bin *.json
