@@ -35,7 +35,8 @@ static int __init fpga_load_init(void)
 		return -ENODEV;
 	}
 
-	ret = fpga_mgr_firmware_load(mgr, &fpga_info, path);
+	fpga_info.firmware_name = path;
+	ret = fpga_mgr_load(mgr, &fpga_info);
 	if (ret) {
 		pr_info("Cannot load FPGA firmware\n");
 		return -ENODEV;
