@@ -17,6 +17,7 @@ $(PROJ).blif: $(SRC)
 	time nextpnr-ice40 \
 		--lp$(DEVICE) \
 		--package $(FOOTPRNT) \
+		--opt-timing \
 		--json hardware.json \
 		--asc $@ \
 		--pcf \
