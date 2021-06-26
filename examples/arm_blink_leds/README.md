@@ -17,8 +17,17 @@ make load
 
 ### Running arm blink script for transferring the memory words from ARM to FPGA (LEDs)
 
-- `chmod +x arm_blink.sh`
-- `sudo ./arm_blink.sh`
+- Before running the arm blink script ensure that bridge libs are compiled.
+```
+cd Beaglewire/bridge_lib/
+make
+```
+- Once the bridge libs are compiled:
+```
+cd Beaglewire/examples/arm_blink_leds
+chmod +x arm_blink.sh
+sudo ./arm_blink.sh
+```
 
 ### TO DO
 - [ ]  Generalize C code with the help of memmap
