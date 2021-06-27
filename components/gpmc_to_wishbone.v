@@ -78,7 +78,6 @@ reg [DATA_WIDTH-1:0] writedata_final;
 //  assign flash_io0_di = flash_io0;
 ////////////////////////////////////////////////////////////////////
 
-
 SB_IO # (
     .PIN_TYPE(6'b1010_01),
     .PULLUP(1'b 0)
@@ -95,8 +94,10 @@ begin
     if (!reset) 
     begin
         data_control <= gpmc_oen;
-        if (!gpmc_advn)         //Latches Input On Know state
+        if (!gpmc_advn)  
+        begin
             address_bridge <= gpmc_latch_address;
+        end
     end
     else 
     begin
@@ -105,6 +106,7 @@ begin
     end
 end
 
+// Bridging the control signals with reset considered
 always @ (negedge gpmc_clk or reset)
 begin
     if (!reset) 
@@ -125,6 +127,7 @@ begin
     end
 end
 
+// Dual Flop synchronizer
 always @ (posedge clk or reset)
 begin
     if (!reset) 
@@ -153,6 +156,7 @@ begin
     end
 end
 
+// Assigning the Data
 assign read_data_bridge = wbm_readdata;
 assign wbm_address      = address_final;
 assign wbm_writedata    = writedata_final;
