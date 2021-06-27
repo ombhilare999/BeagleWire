@@ -17,6 +17,7 @@ $(PROJ).blif: $(SRC)
 	time nextpnr-ice40 \
 		--lp$(DEVICE) \
 		--package $(FOOTPRNT) \
+		--opt-timing \
 		--json hardware.json \
 		--asc $@ \
 		--pcf \
@@ -26,11 +27,8 @@ $(PROJ).blif: $(SRC)
 	time icepack $^ $@
 	/bin/echo -n -e '\x0\x0\x0\x0\x0\x0\x0\x0' >> $@
 
-%.load: %.bin
-	dd if=$< of=/dev/spidev1.0
-
-%.bw-prog: %.bin
-	sh ../../load_fw/bw-prog.sh $^
+load: 
+	sh ../../load_fw/bw-prog.sh *.bin
 
 clean:
 	$(RM) *.blif *.asc *.bin *.json
