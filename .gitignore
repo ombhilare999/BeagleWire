@@ -8,3 +8,5 @@
 *.mod.c
 *.ko
 *.json
+*.out
+*.vcd

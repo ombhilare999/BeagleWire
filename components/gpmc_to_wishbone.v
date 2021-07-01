@@ -4,39 +4,35 @@
 //   Email: omkarbhilare45@gmail.com
 /////////////////////////////////////////////////////////////
 
-`define SIM
+`default_nettype none
 
-`ifdef SIM
-    `include "cells_sim.v"
-`endif 
-
-module gpmc_to_wishbone 
+module gpmc_to_wishbone
 (
     //System Clock and Reset
-    input           clk,            //FPGA Clock
-    input           reset,          //Master Reset for Wishbone Bus
+    input  wire clk,                //FPGA Clock
+    input  wire reset,              //Master Reset for Wishbone Bus
     
     // GPMC INTERFACE 
-    input           gpmc_clk,       //GPMC clock
-    inout  [15:0]   gpmc_ad,        //Data Multiplexed with Address
-    input           gpmc_advn,      //ADVN = Low :: gpmc_ ad = Address and ADVN = high :: gpmc_ ad = Data
-    input           gpmc_csn1,      //Chip Select(Low - On)
-    input           gpmc_wein,      //Low = write operation
-    input           gpmc_oen,       //Low = Read Operation
+
+    inout wire [DATA_WIDTH-1:0] gpmc_ad,  //Data Multiplexed with Address
+    input wire gpmc_clk,       //GPMC clock
+    input wire gpmc_advn,      //ADVN(L : ADDR)
+    input wire gpmc_csn1,      //Chip Select(Low - On)
+    input wire gpmc_wein,      //Low = write operation
+    input wire gpmc_oen,       //Low = Read Operation
     
     //Wishbone Interface Signals
-    input [15:0]    wbm_readdata,   //Wishbone ReadData (The data needs to send to BBB)
-    output [15:0]   wbm_writedata,  //Wishbone Bus for Write Access (The data from blocks)
-    output [15:0]   wbm_address,    //Wishbone Address Bus for Read/Write Data
-    output          wbm_write,      //Wishbone Write(High = Write)
-    output          wbm_strobe,     //Wishbone Data Strobe(Valid Data Transfer)
-    output          wbm_cycle,      //Wishbone Bus Cycle in Progress 
-    input           wbm_ack         //Wishbone Acknowledge Signal from Slave
+    input  wire [DATA_WIDTH-1:0]  wbm_readdata,   //Wishbone ReadData (The data needs to send to BBB)
+    output wire [DATA_WIDTH-1:0]  wbm_writedata,  //Wishbone Bus for Write Access (The data from blocks)
+    output wire [ADDR_WIDTH-1:0]  wbm_address,    //Wishbone Address Bus for Read/Write Data
+    output wire wbm_write,      //Wishbone Write(High = Write)
+    output wire wbm_strobe,     //Wishbone Data Strobe(Valid Data Transfer)
+    output wire wbm_cycle,      //Wishbone Bus Cycle in Progress 
+    input  wire wbm_ack         //Wishbone Acknowledge Signal from Slave
 );
 
-// Macros for Address and Data
-parameter ADDR_WIDTH = 16;
-parameter DATA_WIDTH = 16;
+parameter ADDR_WIDTH = 16;      // Macro for Address  
+parameter DATA_WIDTH = 16;       // Macro for Data
 
 // Variables for the bridge
 reg  [ADDR_WIDTH-1:0] address_bridge;       
@@ -48,7 +44,7 @@ reg wen_bridge;
 reg oen_bridge;
 
 // Variables for tristate buffer
-reg [ADDR_WIDTH-1:0] gpmc_latch_ad;
+reg [DATA_WIDTH-1:0] gpmc_latch_ad;
 wire [DATA_WIDTH-1:0] gpmc_latch_data;
 
 // Variables for Dual flop synchronizer stage 1
@@ -92,8 +88,10 @@ SB_IO # (
     .D_IN_0(gpmc_latch_data)
 );
 
+
 initial begin
-    address_bridge     <= 0;
+    address_bridge <= 5'b00000;
+    gpmc_latch_ad <=     16'b0;
     csn_bridge         <= 1'b1;
     wen_bridge         <= 1'b1;
     oen_bridge         <= 1'b1;
@@ -101,8 +99,8 @@ end
 
 
 // Latching the address with reset considered.
-always @ (negedge gpmc_clk or reset) begin
-    if (reset == 1) begin
+always @ (negedge gpmc_clk) begin
+    if (reset) begin
         if (!gpmc_csn1 && !gpmc_advn && gpmc_wein && gpmc_oen) begin
             address_bridge <= gpmc_latch_data;
         end
@@ -114,8 +112,8 @@ end
 // Bridging the control signals with reset considered
 // Signals fetched on the negative edge of gpmc clk
 
-always @ (negedge gpmc_clk or reset) begin
-    if (reset == 1) begin
+always @ (negedge gpmc_clk) begin
+    if (reset) begin
         csn_bridge  <= gpmc_csn1;
 		wen_bridge  <= gpmc_wein;
 		oen_bridge  <= gpmc_oen;
@@ -132,7 +130,7 @@ end
 // Dual Flop synchronizer 
 ///////////////////////////////////////////////
 always @(posedge clk)begin
-    if (reset == 1) begin
+    if (reset) begin
     // Dual flop synchronizer stage 1  
         csn_first_stage        <= csn_bridge;
         wen_first_stage        <= wen_bridge;
@@ -164,6 +162,6 @@ assign wbm_cycle        = (!wen_final &&  !csn_final && !oen_final); //Cycle goi
 
 assign wbm_address      =  address_final;
 assign wbm_writedata    = writedata_final;
-assign read_data_bridge = (!wbm_write) ? wbm_readdata : 16'bz; 
+assign read_data_bridge = (!wbm_write) ? wbm_readdata : 16'b0;
 
 endmodule

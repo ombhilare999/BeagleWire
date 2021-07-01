@@ -14,7 +14,7 @@ reg clk;
 reg reset;
 
 //GPMC interface
-reg  [15:0 ]gpmc_ad_reg;
+reg    [15:0] gpmc_ad_reg;
 inout  [15:0]   gpmc_ad;        //Data Multiplexed with Address [16:1]
 reg           gpmc_advn;      //Address Valid Enable(Address capture on ADVn rising edge)
 reg           gpmc_csn1;      //Chip Select

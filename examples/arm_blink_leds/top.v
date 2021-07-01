@@ -1,71 +1,100 @@
-module top (input         clk,
-            output [3:0]  led,
-            inout  [15:0] gpmc_ad,
-            input         gpmc_advn,
-            input         gpmc_csn1,
-            input         gpmc_wein,
-            input         gpmc_oen,
-            input         gpmc_clk,
-            input  [1:0]  btn,
-            output [7:0]  pmod1,
-            output [7:0]  pmod2,
-            output [7:0]  pmod3,
-            output [7:0]  pmod4);
+/////////////////////////////////////////////////////////////
+//   Function of IP: Top module for wishbone leds
+//   Author: Omkar Bhilare
+//   Email: omkarbhilare45@gmail.com
+/////////////////////////////////////////////////////////////
 
-parameter ADDR_WIDTH = 5;
-parameter DATA_WIDTH = 16;
-parameter RAM_DEPTH = 1 << ADDR_WIDTH;
+`default_nettype none
 
-reg [DATA_WIDTH-1:0] mem [0:RAM_DEPTH];
+// Uncomment this for iverilog simulation
+// (iverilog top.v -DNO_ICE40_DEFAULT_ASSIGNMENTS)
 
-reg oe;
-reg we;
-reg cs;
-wire[ADDR_WIDTH-1:0]  addr;
-reg [DATA_WIDTH-1:0]  data_out;
-wire [DATA_WIDTH-1:0]  data_in;
+//`define SIM
 
-wire [47:0] dir;
-wire [47:0] Inputs;
-wire [47:0] Outputs;
+`ifdef SIM
+    `include "leds_wb.v"
+    `include "../../components/gpmc_to_wishbone.v"
+    `include "../../components/cells_sim.v"
+`endif
 
-always @ (posedge clk)
-begin
-    if (!cs && !we && oe) begin
-        mem[addr] <= data_out;
-    end
-end
+module top 
+(   
+    // Clock 
+    input  wire        clk,
 
-always @ (posedge clk)
-begin
-    if (!cs && we && !oe) begin
-        data_in <= mem[addr];
-    end else begin
-        data_in <= 0;
-    end
-end
+    // led Output
+    output wire [3:0]  led,
 
-gpmc_sync #(
-    .DATA_WIDTH(DATA_WIDTH),
-    .ADDR_WIDTH(ADDR_WIDTH))
-gpmc_controller (
-    .clk(clk),
-
-    .gpmc_ad(gpmc_ad),
-    .gpmc_advn(gpmc_advn),
-    .gpmc_csn1(gpmc_csn1),
-    .gpmc_wein(gpmc_wein),
-    .gpmc_oen(gpmc_oen),
-    .gpmc_clk(gpmc_clk),
-
-    .oe(oe),
-    .we(we),
-    .cs(cs),
-    .address(addr),
-    .data_out(data_out),
-    .data_in(data_in),
+    //GPMC Input
+    inout  wire [15:0]  gpmc_ad, //Data Multiplexed with Address
+    input  wire       gpmc_advn, //ADVN(L : ADDR)
+    input  wire       gpmc_csn1, //Chip Select(Low - On)
+    input  wire       gpmc_wein, //Low = write operation
+    input  wire        gpmc_oen, //Low = Read Operation
+    input  wire        gpmc_clk  //GPMC clock
 );
 
-assign led = mem[0][3:0];
+// Parameters for Address and Data
+parameter ADDR_WIDTH = 5;
+parameter DATA_WIDTH = 16;
+
+// Wishbone Interfacing Nets:
+wire [ADDR_WIDTH-1:0]     wbm_address;  //Wishbone Address Bus
+wire [DATA_WIDTH-1:0]    wbm_readdata;  //Wishbone Data Bus for Read Access
+wire [DATA_WIDTH-1:0]   wbm_writedata;  //Wishbone Bus for Write Access
+
+wire     wbm_cycle;      //Wishbone Bus Cycle in Progress 
+wire     wbm_strobe;     //Wishbone Data Strobe
+wire     wbm_write;      //Wishbone Write Access 
+wire     wbm_ack;        //Wishbone Acknowledge Signal 
+
+wire     reset;          //Reset Signal
+assign reset = 1'b1;     //Active Low Signal
+
+gpmc_to_wishbone # (
+    .ADDR_WIDTH(ADDR_WIDTH),      // Macro for Address  
+    .DATA_WIDTH(DATA_WIDTH)       // Macro for Data
+) wb_controller (
+    //System Clock and Reset
+    .clk(clk),                    //FPGA Clock
+    .reset(reset),              //Master Reset for Wishbone Bus
+    
+    // GPMC INTERFACE 
+    .gpmc_ad(gpmc_ad),            //Data Multiplexed with Address
+    .gpmc_clk(gpmc_clk),          //GPMC clock
+    .gpmc_advn(gpmc_advn),        //ADVN(L : ADDR)
+    .gpmc_csn1(gpmc_csn1),        //Chip Select(Low - On)
+    .gpmc_wein(gpmc_wein),        //Low = write operation
+    .gpmc_oen(gpmc_oen),          //Low = Read Operation
+    
+    //Wishbone Interface Signals
+    .wbm_address(wbm_address),     //Wishbone Address Bus for Read/Write Data
+    .wbm_readdata(wbm_readdata),   //Wishbone ReadData (The data needs to send to BBB)
+    .wbm_writedata(wbm_writedata), //Wishbone Bus for Write Access (The data from blocks)
+    .wbm_write(wbm_write),       //Wishbone Write(High = Write)
+    .wbm_strobe(wbm_strobe),     //Wishbone Data Strobe(Valid Data Transfer)
+    .wbm_cycle(wbm_cycle),       //Wishbone Bus Cycle in Progress 
+    .wbm_ack(wbm_ack)            //Wishbone Acknowledge Signal from Slave
+);
+
+leds_wb #(
+    .ADDR_WIDTH(ADDR_WIDTH),      // Macro for Address  
+    .DATA_WIDTH(DATA_WIDTH)       // Macro for Data
+) leds_wb_controller (
+    //System Clock and Reset
+    .clk(clk),                  //FPGA Clock
+    .reset(reset),              //Master Reset for Wishbone Bus
+
+	// Leds
+	.led(led),      //LEDs on BeagleWire
+
+	// Wishbone interface
+	.wbs_address(wbm_address),     //Wishbone Address Bus 
+	.wbs_writedata(wbm_writedata), //Wishbone read data
+	.wbs_readdata(wbm_readdata),   //Wishbone write data
+	.wbs_write(wbm_write),  //Wishbone Write(High = Write)
+	.wbs_cycle(wbm_cycle),  //Wishbone Bus Cycle in Progress 
+	.wbs_ack(wbm_ack)       //Wishbone Acknowledge Signal from Slave
+);
 
 endmodule
