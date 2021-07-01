@@ -106,8 +106,7 @@ always @ (negedge gpmc_clk or reset) begin
         if (!gpmc_csn1 && !gpmc_advn && gpmc_wein && gpmc_oen) begin
             address_bridge <= gpmc_latch_data;
         end
-    end
-    else begin
+    end else begin
         address_bridge   <= 0;
     end
 end
@@ -115,17 +114,13 @@ end
 // Bridging the control signals with reset considered
 // Signals fetched on the negative edge of gpmc clk
 
-always @ (negedge gpmc_clk or reset)
-begin
-    if (reset == 1) 
-    begin
+always @ (negedge gpmc_clk or reset) begin
+    if (reset == 1) begin
         csn_bridge  <= gpmc_csn1;
 		wen_bridge  <= gpmc_wein;
 		oen_bridge  <= gpmc_oen;
         write_data_bridge <= gpmc_latch_data;
-    end
-    else
-    begin
+    end else begin
         csn_bridge <= 1'b1;
 		wen_bridge <= 1'b1;
 		oen_bridge <= 1'b1;
@@ -136,10 +131,8 @@ end
 ///////////////////////////////////////////////
 // Dual Flop synchronizer 
 ///////////////////////////////////////////////
-always @(posedge clk)
-begin
-    if (reset == 1) 
-    begin
+always @(posedge clk)begin
+    if (reset == 1) begin
     // Dual flop synchronizer stage 1  
         csn_first_stage        <= csn_bridge;
         wen_first_stage        <= wen_bridge;
@@ -155,9 +148,7 @@ begin
         writedata_final        <= writedata_first_stage; 
 
         gpmc_latch_ad          <= read_data_bridge;  
-    end
-    else 
-    begin
+    end else begin
         csn_final   <= 1'b1;
         wen_final   <= 1'b1;
         oen_final   <= 1'b1;

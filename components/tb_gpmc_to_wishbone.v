@@ -64,16 +64,14 @@ gpmc_to_wishbone_controller (
 always #2.5 clk = ~clk;
 always #20 gpmc_clk = ~gpmc_clk;
 
-initial 
-begin
+initial begin
     $display($time, "   ::   ------------- Starting Simulation of GPMC to Wishbone Wrapper --------------");
     $dumpfile("a.vcd");
     $dumpvars(0, tb_gpmc_to_wishbone); 
 end
 
 // Generating Clocks:
-initial
-begin
+initial begin
     clk = 0;
     gpmc_clk = 0;
     reset = 1;
