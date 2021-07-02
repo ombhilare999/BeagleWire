@@ -6,6 +6,9 @@
 
 `default_nettype none
 
+// Uncomment this for component simulation
+// `include "cells_sim.v"
+
 module gpmc_to_wishbone
 (
     //System Clock and Reset
