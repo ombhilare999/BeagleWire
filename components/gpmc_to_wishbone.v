@@ -132,7 +132,7 @@ end
 ///////////////////////////////////////////////
 // Dual Flop synchronizer 
 ///////////////////////////////////////////////
-always @(posedge clk)begin
+always @ (posedge clk) begin
     if (reset) begin
     // Dual flop synchronizer stage 1  
         csn_first_stage        <= csn_bridge;
