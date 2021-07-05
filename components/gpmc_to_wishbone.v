@@ -63,7 +63,9 @@ reg wen_final;
 reg oen_final;
 reg [ADDR_WIDTH-1:0] address_final;
 reg [DATA_WIDTH-1:0] writedata_final;
+wire datacontrol;
 
+/*
 ////////////////////////////////////////////////////////////////////////
 //  Tri-State buffer control
 //  The Data Multiplexed with Address [16:1] on gpmc_ad bus
@@ -76,11 +78,7 @@ reg [DATA_WIDTH-1:0] writedata_final;
 //                 |
 //                 |---------------------------------> gpmc_latch_data
 //
-//  Verilog Implementation of SB_IO peripheral
-//assign gpmc_ad = data_control ? gpmc_latch_ad : 1'bz;
-//assign gpmc_latch_data = gpmc_ad;
-////////////////////////////////////////////////////////////////////
-
+//  FPGA Primitive Implementation:
 SB_IO # (
     .PIN_TYPE(6'b1010_01),
     .PULLUP(1'b 0)
@@ -90,7 +88,12 @@ SB_IO # (
     .D_OUT_0(gpmc_latch_ad),
     .D_IN_0(gpmc_latch_data)
 );
+///////////////////////////////////////////////////////////////////*/
 
+// Verilog Implementation
+assign datacontrol = (!gpmc_csn1 && gpmc_advn && !gpmc_oen && gpmc_wein && reset);
+assign gpmc_ad = datacontrol ? gpmc_latch_ad : 16'bz;
+assign gpmc_latch_data = gpmc_ad;
 
 initial begin
     address_bridge <= 5'b00000;

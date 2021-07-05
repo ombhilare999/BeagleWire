@@ -25,27 +25,25 @@ module leds_wb
 );
 
 // Parameters for Address and Data
-parameter ADDR_WIDTH = 5;
+parameter ADDR_WIDTH = 1;
 parameter DATA_WIDTH = 16;
 
-//Optional Memory Support
-parameter RAM_DEPTH = 1 << ADDR_WIDTH;
-reg [DATA_WIDTH-1:0] mem [0:RAM_DEPTH];
-reg [DATA_WIDTH-1:0] wbs_readdata_reg;
+reg [3:0] mem;
+reg [3:0] wbs_readdata_reg;
 
 always @(posedge clk) begin
-    if (wbs_write && !wbs_cycle && reset) begin
-        mem[wbs_address] <= wbs_writedata;
-	end else if (!wbs_write && !wbs_cycle && reset) begin
-		wbs_readdata_reg <= mem[wbs_address];
-	end else if (~reset) begin
-		mem[0][3:0] <= 0;
+	if (~reset) begin
+		mem[3:0] <= 0;
 		wbs_readdata_reg  <= 0;
-	end
+	end else if (wbs_write && !wbs_cycle && wbs_address == 0) begin
+        mem[3:0] <= wbs_writedata[3:0];
+	end else if (!wbs_write && !wbs_cycle && wbs_address == 0) begin
+		wbs_readdata_reg <= mem[3:0];
+	end  
 end
 
 assign wbs_readdata = wbs_readdata_reg;
-assign led = mem[0][3:0];
+assign led = mem[3:0];
 assign wbs_ack = wbs_cycle;
 
 endmodule

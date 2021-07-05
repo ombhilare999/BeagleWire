@@ -35,7 +35,7 @@ module top
 );
 
 // Parameters for Address and Data
-parameter ADDR_WIDTH = 5;
+parameter ADDR_WIDTH = 1;
 parameter DATA_WIDTH = 16;
 
 // Wishbone Interfacing Nets:
