@@ -6,8 +6,10 @@
 
 `default_nettype none
 
-module leds_wb
-(
+module leds_wb #(
+	parameter ADDR_WIDTH = 1,   // Parameters for Address and Data
+	parameter DATA_WIDTH = 16
+)(
     // Clock and Reset
 	input  wire clk,
 	input  wire reset,
@@ -24,9 +26,7 @@ module leds_wb
 	output wire wbs_ack        //Wishbone Acknowledge Signal from Slave
 );
 
-// Parameters for Address and Data
-parameter ADDR_WIDTH = 1;
-parameter DATA_WIDTH = 16;
+
 
 reg [3:0] mem;
 reg [3:0] wbs_readdata_reg;

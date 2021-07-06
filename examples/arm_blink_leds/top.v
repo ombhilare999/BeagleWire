@@ -53,7 +53,9 @@ assign reset = 1'b1;     //Active Low Signal
 
 gpmc_to_wishbone # (
     .ADDR_WIDTH(ADDR_WIDTH),      // Macro for Address  
-    .DATA_WIDTH(DATA_WIDTH)       // Macro for Data
+    .DATA_WIDTH(DATA_WIDTH),      // Macro for Data
+    .TARGET("ICE40")              // Target("ICE40")   fpga prmitive
+                                  // Target("GENERAL") verilog implementaion
 ) wb_controller (
     //System Clock and Reset
     .clk(clk),                    //FPGA Clock

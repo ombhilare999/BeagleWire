@@ -9,8 +9,12 @@
 // Uncomment this for component simulation
 // `include "cells_sim.v"
 
-module gpmc_to_wishbone
-(
+module gpmc_to_wishbone #(
+    parameter ADDR_WIDTH = 16,      // Macro for Address  
+    parameter DATA_WIDTH = 16,      // Macro for Data
+    parameter TARGET = "ICE40"      // Target("ICE40"): ice40 primitive for tristate
+                                    // Target("GENERAL"): verilog tristate implementaion
+)(
     //System Clock and Reset
     input  wire clk,                //FPGA Clock
     input  wire reset,              //Master Reset for Wishbone Bus
@@ -33,9 +37,6 @@ module gpmc_to_wishbone
     output wire wbm_cycle,      //Wishbone Bus Cycle in Progress 
     input  wire wbm_ack         //Wishbone Acknowledge Signal from Slave
 );
-
-parameter ADDR_WIDTH = 16;      // Macro for Address  
-parameter DATA_WIDTH = 16;       // Macro for Data
 
 // Variables for the bridge
 reg  [ADDR_WIDTH-1:0] address_bridge;       
@@ -77,23 +78,26 @@ wire datacontrol;
 //                 |       |___________|
 //                 |
 //                 |---------------------------------> gpmc_latch_data
-//
-//  FPGA Primitive Implementation:
-SB_IO # (
-    .PIN_TYPE(6'b1010_01),
-    .PULLUP(1'b 0)
-) gpmc_ad_io [15:0] (
-    .PACKAGE_PIN(gpmc_ad),
-    .OUTPUT_ENABLE(!gpmc_csn1 && gpmc_advn && !gpmc_oen && gpmc_wein && reset),
-    .D_OUT_0(gpmc_latch_ad),
-    .D_IN_0(gpmc_latch_data)
-);
-///////////////////////////////////////////////////////////////////*/
+//////////////////////////////////////////////////////////////////////*/
 
-// Verilog Implementation
 assign datacontrol = (!gpmc_csn1 && gpmc_advn && !gpmc_oen && gpmc_wein && reset);
-assign gpmc_ad = datacontrol ? gpmc_latch_ad : 16'bz;
-assign gpmc_latch_data = gpmc_ad;
+
+generate 
+    if (TARGET == "ICE40") begin //  FPGA Primitive Implementation:     
+        SB_IO # (
+            .PIN_TYPE(6'b1010_01),
+            .PULLUP(1'b 0)
+        ) gpmc_ad_io [15:0] (
+            .PACKAGE_PIN(gpmc_ad),
+            .OUTPUT_ENABLE(datacontrol),
+            .D_OUT_0(gpmc_latch_ad),
+            .D_IN_0(gpmc_latch_data)
+        );
+    end else if (TARGET == "GENERAL") begin    // Verilog Implementation
+        assign gpmc_ad = datacontrol ? gpmc_latch_ad : 16'bz;
+        assign gpmc_latch_data = gpmc_ad;   
+    end
+endgenerate
 
 initial begin
     address_bridge <= 5'b00000;
