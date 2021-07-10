@@ -31,4 +31,4 @@ load:
 	sh ../../load_fw/bw-prog.sh *.bin
 
 clean:
-	$(RM) *.blif *.asc *.bin *.json
+	$(RM) *.blif *.asc *.bin *.json *.out *.vcd

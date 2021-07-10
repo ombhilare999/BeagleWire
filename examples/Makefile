@@ -1,5 +1,5 @@
-SUBDIRS += test
 SUBDIRS += blink_leds
+SUBDIRS += bar_graph
 SUBDIRS += gpio
 SUBDIRS += i2c
 SUBDIRS += lcd
