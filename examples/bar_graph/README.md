@@ -1,4 +1,4 @@
-### Example: Bar Graph
+# Bar Graph
 
 - This Example is the template for wishbone intercon
 - The testcase consist of:
@@ -12,7 +12,7 @@
 ```
 - Wishbone intercon automatically routes signals and data to the appropriate slave depending on the memmap
 
-### Flash the FPGA with arm_blink bitstream 
+### Flash the FPGA with bar_graph bitstream 
 ```
 cd examples/bar_graph
 
@@ -24,9 +24,9 @@ make
 make load
 ```
 
-### Running arm blink script for transferring the memory words from ARM to FPGA (LEDs)
+### Running bar_graph script for transferring the memory words from ARM to FPGA (LEDs)
 
-- Before running the arm blink script ensure that bridge libs are compiled.
+- Before running the bar graph script ensure that bridge libs are compiled.
 ```
 cd Beaglewire/bridge_lib/
 make
