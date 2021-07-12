@@ -2,6 +2,7 @@
 
 - The LEDs blink via ARM memory.
 - GPMC has been used between ARM and FPGA for memory Transfer
+- Further the GPMC protocol has been converted to Wishbone protocol
 
 ### Flash the FPGA with arm_blink bitstream 
 ```
