@@ -85,14 +85,24 @@ gpmc_to_wishbone # (
 );
 
 
+
+/*
+    Wishbone Memmap
+        Slave 0:  0x0000
+        Slave 1:  0x0040
+*/
+
 parameter wb_decoder_width = 8;
 parameter wb_no_slaves = 2;
-parameter [wb_no_slaves-1:0] wb_memmap = {8'h00,8'h40};
+parameter wb_slave_0 = 8'h00;
+parameter wb_slave_1 = 8'h40;
 
 wire [DATA_WIDTH-1:0]  wbi_readdata_0;
 wire [DATA_WIDTH-1:0]  wbi_readdata_1;
+
 wire [DATA_WIDTH-1:0]  wbi_writedata;
 wire [ADDR_WIDTH-1:0]  wbi_address;
+
 wire wbi_write;
 wire [wb_no_slaves-1:0] wbi_strobe;
 wire [wb_no_slaves-1:0] wbi_cycle;
@@ -102,12 +112,8 @@ wb_intercon #(
     // Wishbone Slave Number and address info
     .wb_decoder_width(wb_decoder_width),     // Decoder Width
     .wb_no_slaves(wb_no_slaves),         // Number of Slaves
-    /*
-    Wishbone Memmap
-        Slave 0:  0x0000
-        Slave 1:  0x0040
-    */
-    .wb_memmap(wb_memmap),
+    .wb_slave_0(wb_slave_0),
+    .wb_slave_1(wb_slave_1),
     .ADDR_WIDTH(ADDR_WIDTH),           // Parameters for Address and Data
 	.DATA_WIDTH(DATA_WIDTH)
 ) wb_intercon_DUT (
@@ -146,7 +152,7 @@ bar_graph_wb #(
     .reset(reset),              //Master Reset for Wishbone Bus
 
 	// Leds
-	.bar_graph(pmod4),      //LEDs on BeagleWire
+	.bar_graph(pmod3),      //LEDs on BeagleWire
 
 	// Wishbone interface
 	.wbs_address(wbi_address),     //Wishbone Address Bus 
@@ -168,7 +174,7 @@ bar_graph_wb #(
     .reset(reset),              //Master Reset for Wishbone Bus
 
 	// Leds
-	.bar_graph(pmod3),      //LEDs on BeagleWire
+	.bar_graph(pmod4),      //LEDs on BeagleWire
 
 	// Wishbone interface
 	.wbs_address(wbi_address),     //Wishbone Address Bus 

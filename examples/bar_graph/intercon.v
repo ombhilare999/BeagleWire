@@ -11,6 +11,10 @@
 //   - Based on multiplexors
 //   - 1 Master to 2 slaves
 //   - Partial Decoding
+//
+//    Wishbone Memmap
+//        Slave 0:  0x0000
+//        Slave 1:  0x0040
 ///////////////////////////////////////////////////////////*/
 
 
@@ -18,14 +22,10 @@ module wb_intercon #(
     // Wishbone Slave Number and address info
     parameter wb_decoder_width = 8,     // Decoder Widht
     parameter wb_no_slaves = 2,         // Number of Slaves
-    /*
-    Wishbone Memmap
-        Slave 0:  0x0000
-        Slave 1:  0x0040
-    */
-    parameter [wb_no_slaves-1:0] wb_memmap = {8'h00,8'h40},
+    parameter wb_slave_0 = 8'h00,
+    parameter wb_slave_1 = 8'h40,
 
-    parameter ADDR_WIDTH = 16,      // Parameters for Address and Data
+    parameter ADDR_WIDTH = 8,      // Parameters for Address and Data
 	parameter DATA_WIDTH = 16
 )(
     // Clock and Reset
@@ -60,9 +60,9 @@ reg wbm_ack_muxed;
     --------- Partial Address Decoder in Verilog. ---------
 */
 always @ (posedge clk) begin
-    if (wb_memmap[0] < wbi_address[wb_decoder_width-1:0] < wb_memmap[1]) begin
+    if (wbi_address < wb_slave_1) begin
         wbi_cs <= 2'b01;
-    end else if (wb_memmap[1] < wbi_address[wb_decoder_width-1:0]) begin
+    end else if (wbi_address > wb_slave_1) begin
         wbi_cs <= 2'b10;    
     end else begin 
         wbi_cs <= 2'b00;

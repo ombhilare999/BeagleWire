@@ -29,7 +29,6 @@ module bar_graph_wb #(
 
 reg [7:0] mem;
 reg [7:0] wbs_readdata_reg;
-reg wbs_ack_reg;
 
 always @(posedge clk) begin
 	if (~reset) begin
@@ -37,7 +36,6 @@ always @(posedge clk) begin
 		wbs_readdata_reg  <= 0;
 	end else if (wbs_write && wbs_strobe &&  wbs_cycle) begin
         mem[7:0] <= wbs_writedata[7:0];
-		wbs_ack_reg <= 1'b1;
 	end else if (!wbs_write && wbs_strobe && wbs_cycle) begin
 		wbs_readdata_reg <= mem[7:0];
 	end  
