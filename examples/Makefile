@@ -6,6 +6,7 @@ SUBDIRS += lcd
 SUBDIRS += lcd_game
 SUBDIRS += pwm
 SUBDIRS += sdram
+SUBDIRS += sdram_litedram
 SUBDIRS += spi
 SUBDIRS += stepper_motor
 SUBDIRS += uart
