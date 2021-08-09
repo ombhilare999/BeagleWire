@@ -4,34 +4,37 @@
 ## Script to prgoram beaglewire with spi
 ##########################################
 
-echo "|--------------------------------------------|"
-echo "|-----Flashing Beaglewire with SPI MODE -----|"
-echo "|--------------------------------------------|"
+echo -e "\n|--------------------------------------------|"
+echo -e "|-----Flashing Beaglewire with SPI MODE -----|"
+echo -e "|--------------------------------------------|\n\n"
 
-echo "Truncating file to max limit of 4194304"
+echo -e "Truncating file to max limit of 4194304\n"
 truncate $1 -s 4194304 
 
-echo "Changing Direction of BB Reset to Output so FPGA won't interfer in SPI FLASH Programming"
-echo 117 > /sys/class/gpio/export || echo "GPIO export of resest pin failed, please rerun"
-echo out > /sys/class/gpio/gpio117/direction || echo "GPIO out of reset pin failed, please rerun"
+echo -e "Turning of FPGA by keeping reset High"
+config-pin P9_25 gpio_pu
 
-echo "Activating SPI mode"
+echo -e "Activating SPI mode"
 config-pin P9_28 spi_cs
 config-pin P9_31 spi_sclk
 
-echo "Activating the flash chip with 0xAB command"
-spi_test -d /dev/spidev1.0 -l 1 -m ab || echo "Failed, Rerun the script"
+echo -e "Activating the flash chip with 0xAB command\n"
+spi_test -d /dev/spidev1.0 -l 1 -m ab 
 
-echo "Flashing nor flash with the $1 bin file"
+echo -e "\n|--------------------------------------------|"
+echo -e "|---------  Programming nor flash -----------|"
+echo -e "|--------------------------------------------|\n"
+
+echo -e "Flashing nor flash with the $1 bin file\n"
 flashrom -p linux_spi:dev=/dev/spidev1.0,spispeed=25000000 -w $1 -c MX25L3273E || echo "Failed, Rerun the script"
 
-echo "Changing Direction of BB Reset to input"
-echo in > /sys/class/gpio/gpio117/direction
+echo -e "Turning on FPGA by keeping reset Low"
+config-pin P9_25 gpio_pd
 
-echo "Deactivating SPI mode"
+echo -e "Deactivating SPI mode"
 config-pin P9_28 gpio
 config-pin P9_31 gpio
 
-echo "|---------------------------------------------|"
-echo "|----RESET THE FPGA to run the bitstream -----|"
-echo "|---------------------------------------------|"
+echo -e "|---------------------------------------------|"
+echo -e "|----RESET THE FPGA to run the bitstream -----|"
+echo -e "|---------------------------------------------|"
