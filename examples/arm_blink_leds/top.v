@@ -76,7 +76,8 @@ gpmc_to_wishbone # (
     .wbm_write(wbm_write),       //Wishbone Write(High = Write)
     .wbm_strobe(wbm_strobe),     //Wishbone Data Strobe(Valid Data Transfer)
     .wbm_cycle(wbm_cycle),       //Wishbone Bus Cycle in Progress 
-    .wbm_ack(wbm_ack)            //Wishbone Acknowledge Signal from Slave
+    .wbm_ack(wbm_ack),            //Wishbone Acknowledge Signal from Slave
+    .wbm_strobe(wbm_strobe)
 );
 
 leds_wb #(
@@ -96,7 +97,8 @@ leds_wb #(
 	.wbs_readdata(wbm_readdata),   //Wishbone write data
 	.wbs_write(wbm_write),  //Wishbone Write(High = Write)
 	.wbs_cycle(wbm_cycle),  //Wishbone Bus Cycle in Progress 
-	.wbs_ack(wbm_ack)       //Wishbone Acknowledge Signal from Slave
+	.wbs_ack(wbm_ack),       //Wishbone Acknowledge Signal from Slave
+    .wbs_strobe(wbm_strobe)
 );
 
 endmodule
