@@ -27,8 +27,8 @@
  */
 &ocp {
     P9_28_pinmux { pinctrl-0 = <&P9_28_spi_cs_pin>; }; /* CS */
-    P9_30_pinmux { pinctrl-0 = <&P9_29_spi_pin>; }; /* MOSI */
-    P9_29_pinmux { pinctrl-0 = <&P9_30_spi_pin>; }; /* MISO */
+    P9_30_pinmux { pinctrl-0 = <&P9_30_spi_pin>; }; /* MOSI */
+    P9_29_pinmux { pinctrl-0 = <&P9_29_spi_pin>; }; /* MISO */
     P9_31_pinmux { pinctrl-0 = <&P9_31_spi_sclk_pin>; }; /* CLK */
     P9_25_pinmux { pinctrl-0 = <&P9_25_gpio_pin>;};	/* bw_creset */
     P9_21_pinmux { pinctrl-0 = <&P9_21_gpio_pin>;};	/* bw_cdone */
