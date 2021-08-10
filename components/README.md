@@ -36,7 +36,7 @@ gtkwave a.vcd
 ### Write and Read Cycle simulation of gpmc to wishbone wrapper:
 
 <p align="center">
-  <img width="581" height="202" src="../images/gpmc_to_wishbone.png">
+  <img width="581" height="202" src="../assets/gpmc_to_wishbone.png">
 </p>
 
 
