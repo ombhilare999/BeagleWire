@@ -27,8 +27,11 @@ $(PROJ).blif: $(SRC)
 	time icepack $^ $@
 	/bin/echo -n -e '\x0\x0\x0\x0\x0\x0\x0\x0' >> $@
 
-load: 
+load_fpga: 
 	sh ../../load_fw/bw-prog.sh *.bin
+
+load_spi: 
+	sh ../../load_fw/bw-spi.sh *.bin
 
 clean:
 	$(RM) *.blif *.asc *.bin *.json *.out *.vcd
