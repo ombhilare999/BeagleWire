@@ -28,10 +28,10 @@ $(PROJ).blif: $(SRC)
 	/bin/echo -n -e '\x0\x0\x0\x0\x0\x0\x0\x0' >> $@
 
 load_fpga: 
-	sh ../../load_fw/bw-prog.sh *.bin
+	bw-prog.sh *.bin
 
 load_spi: 
-	sh ../../load_fw/bw-spi.sh *.bin
+	bw-spi.sh *.bin
 
 clean:
 	$(RM) *.blif *.asc *.bin *.json *.out *.vcd

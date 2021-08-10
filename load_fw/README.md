@@ -1,7 +1,7 @@
 # BeagleWire Programming 
 
-- First of all add following lines in `.bashrc` so that those scripts can be run from anywhere.
-- `vim .bashrc`
+- First of all add following lines in `.bashrc` at th end, so that those scripts can be run from anywhere.
+- `vim /home/debian/.bashrc`
 
 ```
 # To run beaglewire script from anywhere
@@ -14,6 +14,8 @@
 ## 1) Flashing the sram on beaglewire with bitstream:
 
 ```
+    sudo su
+    source /home/debian/.bashrc 
     bw-spi.sh <bin file to program>
     #Example: bw-spi.sh blink.bin
 ``` 

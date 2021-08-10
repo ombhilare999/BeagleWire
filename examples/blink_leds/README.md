@@ -6,7 +6,7 @@
 
 ### Flash the FPGA with blink_leds bitstream 
 ```
-cd examples/blink_leds
+cd Beaglewire/examples/blink_leds
 
 # If the fpga tools present on BBB
 make

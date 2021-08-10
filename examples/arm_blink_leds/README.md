@@ -6,7 +6,7 @@
 
 ### Flash the FPGA with arm_blink bitstream 
 ```
-cd examples/arm_blink_leds
+cd Beaglewire/examples/arm_blink_leds
 
 # If the fpga tools present on BBB
 make
@@ -20,7 +20,7 @@ make
 # Loading SPI flash after FPGA reset, it will be boot up on SPI.
 make load_spi
 
-# Reset the FPGA for running bitsream (RST Button on BeagleWire)s
+# Reset the FPGA for running bitsream (RST Button on BeagleWire)
 ```
 
 ### Running arm blink script for transferring the memory words from ARM to FPGA (LEDs)
