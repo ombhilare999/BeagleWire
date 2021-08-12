@@ -15,7 +15,7 @@
 
 ```
     sudo su
-    source /home/debian/.bashrc 
+    source .bashrc 
     bw-spi.sh <bin file to program>
     #Example: bw-spi.sh blink.bin
 ``` 
@@ -28,16 +28,21 @@
 ```
     sudo vim /boot/uEnv.txt
     
-    #Add this overlay line at addr4 place:
-
-    uboot_overlay_addr4=/lib/firmware/BW-ICE40Cape-00A0.dtbo 
+    #Add this overlay line at addr0 place:
+    #If we had added the overlay at addr4, bbb automatically will add BW-ICE40Cape-00A0.dtbo overlay
+    #So to override that file we need to add this at addr0
+    
+    uboot_overlay_addr0=/lib/firmware/BW-ICE40Cape-00A0_LKM.dtbo 
+    
+    #Disable the cape universal
+    #enable_uboot_cape_universal = 1
 
     #Reboot after this
 ``` 
 
 - `cd beaglewire/load_fw`
 - `make`
-- `./bw-prog.sh blink.bin` 
+- `bw-prog.sh blink.bin` 
 - Using this way one can program any bitstream directly to the FPGA via ice40-spi kernel driver and LKM module.
 
 

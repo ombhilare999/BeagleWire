@@ -4,6 +4,7 @@
 
     .
     ├── BW-ICE40Cape-00A0.dts            #Overlay for programming FPGA using SPI flash method
+    ├── BW-ICE40Cape-00A0_LKM.dts        #Overlay for programming FPGA Directly
     ├── dts.sh                           #Script for dts compilation
     ├── peripherals_dts
     │   ├── BW-GPIO-ICE40Cape-00A0.dts   #Overlay for GPIO
