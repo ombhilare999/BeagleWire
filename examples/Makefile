@@ -11,6 +11,8 @@ SUBDIRS += spi
 SUBDIRS += stepper_motor
 SUBDIRS += uart
 SUBDIRS += arm_blink_leds
+SUBDIRS += vga
+SUBDIRS += vga_pong
 
 all: $(foreach d,$(SUBDIRS),$d/$d.bin)
 
