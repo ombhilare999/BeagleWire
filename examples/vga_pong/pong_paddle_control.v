@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-//   Module Name: vga_test_pattern_top.v
+//   Module Name: pong_paddle_control.v
 //  Dependencies: 25 MHz Clock.
 //          Info: Pong Paddle Control
 //                

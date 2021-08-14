@@ -10,10 +10,16 @@ module top
 (
     //Main Clock
     input i_clk,
+    output [3:0] led,
 
-	//Select Input for Pattern Display
-	input sel0,
-	input sel1,	
+    //Start Switch:
+    input start_switch,
+
+	//Player Switch Input
+	input i_switch_1,
+	input i_switch_2,
+    input i_switch_3,	
+    input i_switch_4,
 	
     //VGA
     output   o_VGA_hsync,
@@ -26,7 +32,7 @@ module top
     output o_VGA_green_2,
     output  o_VGA_blue_0,
     output  o_VGA_blue_1,
-    output  o_VGA_blue_2,
+    output  o_VGA_blue_2
 );
 
     //Parameter Needed:
@@ -38,15 +44,15 @@ module top
 
     // Common VGA Signals
     wire w_hsync_vga, w_vsync_vga;
-    wire w_hsync_tp, w_vsync_tp;
     wire w_hsync_porch, w_vsync_porch;
-    wire [VIDEO_WIDTH-1:0]   w_red_TP,   w_red_Porch;
-    wire [VIDEO_WIDTH-1:0] w_green_TP, w_green_Porch;
-    wire [VIDEO_WIDTH-1:0]  w_blue_TP,  w_blue_Porch;
+    wire w_hsync_pong, w_vsync_pong;
+
+    wire [VIDEO_WIDTH-1:0]   w_red_video_pong,   w_red_Porch;
+    wire [VIDEO_WIDTH-1:0]   w_green_video_pong, w_green_Porch;
+    wire [VIDEO_WIDTH-1:0]   w_blue_video_pong,  w_blue_Porch;
 	
 	// Clock Signals
 	
-
     /*
     icepll -i 100 -o 24
 
@@ -83,20 +89,37 @@ module top
         .PLLOUTCORE(i_clk_24)
     );
 	
-	//Pattern for dispaly
-	wire [2:0]i_pattern;
-    reg  [2:0]i_pattern_reg;
+    // Debounce Switches
+    wire w_switch_1, w_switch_2, w_switch_3, w_switch_4;
 
-	always @(sel0 or sel1) begin
-        case({sel0, sel1}) 
-            2'b00: i_pattern_reg <= 3'b001;
-            2'b01: i_pattern_reg <= 3'b010;
-            2'b10: i_pattern_reg <= 3'b100;
-            2'b11: i_pattern_reg <= 3'b101;
-        endcase 
-    end
+    debounce_switch switch_1
+    (
+        .i_clk(i_clk_24),
+        .i_switch(i_switch_1),
+        .o_switch(w_switch_1)
+    );
 
-    assign i_pattern = i_pattern_reg;
+    debounce_switch switch_2
+    (
+        .i_clk(i_clk_24),
+        .i_switch(i_switch_2),
+        .o_switch(w_switch_2)
+    );
+
+    debounce_switch switch_3
+    (
+        .i_clk(i_clk_24),
+        .i_switch(i_switch_3),
+        .o_switch(w_switch_3)
+    );
+
+    debounce_switch switch_4
+    (
+        .i_clk(i_clk_24),
+        .i_switch(i_switch_4),
+        .o_switch(w_switch_4)
+    );
+
 	
     //////////////////////////////////////////////////////////////////////////////////////
     // Creating Instants of VGA modules
@@ -111,29 +134,49 @@ module top
         .o_row_count()
     );
 
-    test_pattern_gen test_pattern_gen
-    (
+    wire [3:0] score;
+    assign led = {w_switch_1, w_switch_2, w_switch_3, w_switch_4};
+
+    pong_top 
+    #(
+        .TOTAL_COLS(TOTAL_COLS),
+        .TOTAL_ROWS(TOTAL_ROWS),
+        .ACTIVE_COLS(ACTIVE_COLS),
+        .ACTIVE_ROWS(ACTIVE_ROWS)
+    ) pong_top (
         .i_clk(i_clk_24),
-        .i_pattern(i_pattern),
         .i_hsync(w_hsync_vga),
         .i_vsync(w_vsync_vga),
-        .o_hsync(w_hsync_tp),
-        .o_vsync(w_vsync_tp),
-        .o_red_video(w_red_TP),
-        .o_green_video(w_green_TP),
-        .o_blue_video(w_blue_TP)
+        .i_game_start(start_switch),    //game start button
+        
+        // Paddle control buttons
+        .i_paddle_up_p1(w_switch_1),
+        .i_paddle_down_p1(w_switch_2),
+        .i_paddle_up_p2(w_switch_3),
+        .i_paddle_down_p2(w_switch_4),
+
+        //Output Video
+        .score(score),
+        .o_hsync(w_hsync_pong),
+        .o_vsync(w_vsync_pong),
+        .o_red_video(w_red_video_pong),
+        .o_green_video(w_green_video_pong),
+        .o_blue_video(w_blue_video_pong)
     );
 
     vga_sync_porch vga_sync_porch
     (
         .i_clk(i_clk_24),
-        .i_hsync(w_hsync_tp),
-        .i_vsync(w_vsync_tp),
-        .i_red_video(w_red_TP),
-        .i_green_video(w_green_TP),
-        .i_blue_video(w_blue_TP),
+        .i_hsync(w_hsync_pong),
+        .i_vsync(w_vsync_pong),
+
+        .i_red_video(w_red_video_pong),
+        .i_green_video(w_green_video_pong),
+        .i_blue_video(w_blue_video_pong),
+
         .o_hsync(w_hsync_porch),
         .o_vsync(w_vsync_porch),
+
         .o_red_video(w_red_Porch),
         .o_green_video(w_green_Porch),
         .o_blue_video(w_blue_Porch)
@@ -146,6 +189,7 @@ module top
     assign   o_VGA_red_0 = w_red_Porch[0];
     assign   o_VGA_red_1 = w_red_Porch[1];
     assign   o_VGA_red_2 = w_red_Porch[2];
+
 
     assign o_VGA_green_0 = w_green_Porch[0];
     assign o_VGA_green_1 = w_green_Porch[1];

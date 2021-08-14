@@ -7,24 +7,28 @@ set_io led[1] 29
 set_io led[2] 31
 set_io led[3] 32
 
-# button
-set_io sel0 25
-set_io sel1 26
+# Start button
+set_io start_switch 25
 
 # pmod
+set_io i_switch_1 37 # PMOD1 B1
+set_io i_switch_2 39 # PMOD1 B2
+set_io i_switch_3 42 # PMOD1 B3
+set_io i_switch_4 44 # PMOD1 B4
+
 set_io   o_VGA_red_0 107 # pmod3[0] 
 set_io   o_VGA_red_1 112 # pmod3[1]
 set_io   o_VGA_red_2 114 # pmod3[2]
-#set_io  o_VGA_red_0 129 # pmod3[3]
+#set_io  o_VGA_red_3 129 # pmod3[3]
 set_io   o_VGA_blue_0 110 # pmod3[4]
 set_io   o_VGA_blue_1 113 # pmod3[5]
 set_io   o_VGA_blue_2 115 # pmod3[6]
-#set_io  o_VGA_blue_0 130 # pmod3[7]
+#set_io  o_VGA_blue_3 130 # pmod3[7]
 
 set_io o_VGA_green_0  7  # pmod4[0]
 set_io o_VGA_green_1  9  # pmod4[1]
 set_io o_VGA_green_2  15 # pmod4[2]
-#set_io o_VGA_green_0 12 # pmod4[3]
+#set_io o_VGA_green_3 12 # pmod4[3]
 set_io o_VGA_hsync    4  # pmod4[4]
 set_io o_VGA_vsync    8  # pmod4[5]
 #set_io pmod4[6] 10 # pmod4[6]

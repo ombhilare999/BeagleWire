@@ -1,4 +1,4 @@
-## Arm Blink LEDs
+# Arm Blink LEDs
 
 - Example Directory: [arm_blink_leds](https://github.com/BeagleWire/BeagleWire/tree/master/examples/arm_blink_leds)
 - The LEDs blink via ARM memory.
@@ -6,7 +6,7 @@
 
 ### Flash the FPGA with arm_blink bitstream 
 ```
-cd Beaglewire/examples/arm_blink_leds
+cd examples/arm_blink_leds
 
 # If the fpga tools present on BBB
 make

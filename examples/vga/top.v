@@ -14,7 +14,7 @@ module top
 	//Select Input for Pattern Display
 	input sel0,
 	input sel1,	
-	
+	input sel2,
     //VGA
     output   o_VGA_hsync,
     output   o_VGA_vsync,
@@ -83,21 +83,24 @@ module top
         .PLLOUTCORE(i_clk_24)
     );
 	
-	//Pattern for dispaly
+	/*Pattern for dispaly
 	wire [2:0]i_pattern;
     reg  [2:0]i_pattern_reg;
 
-	always @(sel0 or sel1) begin
-        case({sel0, sel1}) 
-            2'b00: i_pattern_reg <= 3'b001;
-            2'b01: i_pattern_reg <= 3'b010;
-            2'b10: i_pattern_reg <= 3'b100;
-            2'b11: i_pattern_reg <= 3'b101;
+	always @(sel2 or sel1 or sel0) begin
+        case({sel2, sel1, sel0}) 
+            3'b000: i_pattern_reg <= 3'b000;
+            3'b001: i_pattern_reg <= 3'b001;
+            3'b010: i_pattern_reg <= 3'b010;
+            3'b011: i_pattern_reg <= 3'b011;
+            3'b100: i_pattern_reg <= 3'b100;
+            3'b101: i_pattern_reg <= 3'b101;
         endcase 
     end
-
-    assign i_pattern = i_pattern_reg;
-	
+    */
+    
+    wire [2:0] i_pattern = {sel2, sel1, sel0};
+	 
     //////////////////////////////////////////////////////////////////////////////////////
     // Creating Instants of VGA modules
     //////////////////////////////////////////////////////////////////////////////////////

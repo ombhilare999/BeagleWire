@@ -12,8 +12,8 @@
 module sync_count
 #(
 //Parameter Needed For producing horizontal and veritical sync
-    parameter TOTAL_COLS = 800;
-    parameter TOTAL_ROWS = 525;
+    parameter TOTAL_COLS = 800,
+    parameter TOTAL_ROWS = 525
 )(
     input  i_clk,
     input  i_hsync,

@@ -10,6 +10,7 @@ set_io led[3] 32
 # button
 set_io sel0 25
 set_io sel1 26
+set_io sel2 33
 
 # pmod
 set_io   o_VGA_red_0 107 # pmod3[0] 

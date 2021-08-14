@@ -1,4 +1,4 @@
-## Blink LEDs
+# Blink LEDs
 
 
 - Example Directory: [blink_leds](https://github.com/BeagleWire/BeagleWire/tree/master/examples/blink_leds)
@@ -6,7 +6,7 @@
 
 ### Flash the FPGA with blink_leds bitstream 
 ```
-cd Beaglewire/examples/blink_leds
+cd examples/blink_leds
 
 # If the fpga tools present on BBB
 make

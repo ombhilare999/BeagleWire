@@ -14,7 +14,7 @@
 
 ### Flash the FPGA with bar_graph bitstream 
 ```
-cd Beaglewire/examples/bar_graph
+cd examples/bar_graph
 
 # If the fpga tools present on BBB
 make

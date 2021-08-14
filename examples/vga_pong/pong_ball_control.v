@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-//   Module Name: vga_test_pattern_top.v
+//   Module Name: pong_ball_control.v
 //  Dependencies: 25 MHz Clock.
 //          Info: Pong Ball Control
 //                
@@ -12,8 +12,8 @@ module pong_ball_control
 )(
     input i_clk,
     input i_game_active,
-    input i_col_count_div,
-    input i_row_count_div,
+    input [5:0] i_col_count_div,
+    input [5:0] i_row_count_div,
     output reg o_draw_ball,
     output reg [5:0] o_ball_x = 0,
     output reg [5:0] o_ball_y = 0
@@ -24,8 +24,8 @@ module pong_ball_control
 // every 50 milliseconds that the button is held down.
 parameter c_ball_speed = 1250000;
 
-reg r_ball_x_prev = 0;
-reg r_ball_y_prev = 0;
+reg [5:0] r_ball_x_prev = 0;
+reg [5:0] r_ball_y_prev = 0;
 reg [31:0] r_ball_count = 0;
 
 always @(posedge i_clk) begin
@@ -34,7 +34,7 @@ always @(posedge i_clk) begin
         o_ball_x <= c_game_width/2;
         o_ball_y <= c_game_height/2;
         r_ball_x_prev <= c_game_width/2 + 1;
-        r_ball_y_prev <= c_game_height/2 + 1;
+        r_ball_y_prev <= c_game_height/2 - 1;
     end else begin
         // update the ball counter continuously 
         if (r_ball_count < c_ball_speed) begin
@@ -71,7 +71,7 @@ end
 
 // Draw the pong game:
 always @(posedge i_clk) begin
-    if (i_row_count_div == o_ball_x && i_col_count_div == o_ball_y) begin
+    if (i_row_count_div == o_ball_y && i_col_count_div == o_ball_x) begin
         o_draw_ball <= 1'b1;
     end else begin
         o_draw_ball <= 1'b0;
