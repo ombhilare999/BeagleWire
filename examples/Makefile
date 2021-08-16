@@ -9,6 +9,7 @@ SUBDIRS += spi
 SUBDIRS += stepper_motor
 SUBDIRS += uart
 SUBDIRS += arm_blink_leds
+SUBDIRS += encoder
 SUBDIRS += vga
 SUBDIRS += vga_pong
 

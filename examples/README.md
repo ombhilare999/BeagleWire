@@ -9,6 +9,7 @@
 ├── blink_leds
 ├── vga
 ├── vga_pong
+├── encoder
 ├── gpio
 ├── i2c
 ├── lcd
@@ -88,5 +89,11 @@
 |     Player2_Paddle_UP     | PMOD1_2     |
 |     Player2_Paddle_Down    | PMOD1_3       |
 
-
+- [Detailed Steps](https://beaglewire.github.io/Examples/vga_pong.html)
 - Demo Video of VGA can be found here: [Imgur](https://imgur.com/V1f6uFf)
+
+## 6) Encoder
+
+- Encoder has two inbuilt 90 degree phase out switches, using which we could tell the direction of encoder motion.
+- Using a state diagram we are detecting the direction.
+- All the steps and information can be found here: [Detailed Steps](https://beaglewire.github.io/Examples/encoder.html)

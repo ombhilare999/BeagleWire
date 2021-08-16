@@ -1,0 +1,15 @@
+# user clock
+set_io i_clk 61
+
+# LED
+set_io led[0] 28
+set_io led[1] 29
+set_io led[2] 31
+set_io led[3] 32
+
+# pmod
+set_io encoder_a 47    # PMOD2 B1
+set_io encoder_b 49    # PMOD2 B2
+set_io encoder_btn 55  # PMOD2 B3
+set_io pmod_sw 60      # PMOD2 B4
+
