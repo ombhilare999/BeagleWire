@@ -2,6 +2,7 @@
 #include <getopt.h>
 #include <stdlib.h>
 #include "bw_bridge.h"
+#define word_access
 
 void print_usage()
 {
@@ -36,6 +37,7 @@ int main(int argc, char *argv[])
 		{
 		case 'a':
 			address = strtoul(optarg, NULL, 16);
+			address = address*2; 
 			break;
 		case 'w':
 			value = strtoul(optarg, NULL, 16);
@@ -58,7 +60,7 @@ int main(int argc, char *argv[])
 		*(uint16_t *)(ptr + address) = value;
 	}
 
-	printf("mem[%d] = %x\n",address, *(uint16_t *)(ptr + address));
+	printf("mem[%x] = %x\n",address/2, *(uint16_t *)(ptr + address));
 
 	bridge_close(&br);
 

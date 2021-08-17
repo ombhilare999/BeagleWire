@@ -1,6 +1,7 @@
-PROJ = arm_blink
+PROJ = bar_graph
 SRC += top.v
-SRC += leds_wb.v
+SRC += bar_graph_wb.v
+SRC += intercon.v
 SRC += ../../components/gpmc-sync.v
 SRC += ../../components/gpmc_to_wishbone.v
 
