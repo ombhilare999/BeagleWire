@@ -167,8 +167,8 @@ end
 
 // Assigning the Data
 assign wbm_write        = (!wen_final &&  !csn_final);  //Active High Signal. HIGH = Write Going
-assign wbm_strobe       = (!csn_final && (wen_final || !oen_final)); //Valid Data
-assign wbm_cycle        = (!wen_final &&  !csn_final && !oen_final); //Cycle going or not 
+assign wbm_strobe       = (!csn_final && (!wen_final || !oen_final)); //Valid Data
+assign wbm_cycle        = (!csn_final && (!wen_final || !oen_final)); //Cycle going or not 
 
 assign wbm_address      =  address_final;
 assign wbm_writedata    = writedata_final;

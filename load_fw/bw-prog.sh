@@ -3,7 +3,13 @@
 # USAGE
 #     sudo sh bw-prog.sh bw-fpga.bin
 
+
+echo -e "\n|--------------------------------------------|"
+echo -e "|-----Flashing Beaglewire Directly------------|"
+echo -e "|--------------------------------------------|\n\n"
+
 echo "$PWD"
+modprobe ice40-spi 
 
 # copy .bin file to kernel location
 cp -av $1 /lib/firmware
@@ -35,3 +41,4 @@ fi
 set -o xtrace
 insmod fpga-load.ko path=${1##*/}
 rmmod  fpga-load.ko
+rmmod  ice40-spi
